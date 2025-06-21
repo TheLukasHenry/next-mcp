@@ -5,7 +5,7 @@ const handler = createMcpHandler(
   async (server) => {
     server.tool(
       "echo",
-      "description",
+      "Echo a message back to the user",
       {
         message: z.string(),
       },
