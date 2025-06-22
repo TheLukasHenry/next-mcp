@@ -1,0 +1,31 @@
+{
+  "name": "next-mcp-server",
+  "description": "Custom Next.js MCP Server with PostgreSQL and Redis",
+  "version": "1.0.0",
+  "transport": {
+    "type": "http",
+    "url": "YOUR_PRODUCTION_URL/mcp",
+    "headers": {
+      "Authorization": "Bearer YOUR_API_KEY",
+      "Content-Type": "application/json"
+    }
+  },
+  "capabilities": {
+    "tools": {
+      "echo": {
+        "description": "Echo a message back to the user",
+        "parameters": {
+          "message": {
+            "type": "string",
+            "description": "Message to echo back"
+          }
+        }
+      }
+    }
+  },
+  "endpoints": {
+    "primary": "YOUR_PRODUCTION_URL/mcp",
+    "sse": "YOUR_PRODUCTION_URL/sse",
+    "health": "YOUR_PRODUCTION_URL/api/public"
+  }
+}
