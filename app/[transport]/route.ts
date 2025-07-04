@@ -40,22 +40,6 @@ const handler = createMcpHandler(
     );
 
     // server.tool(
-    //   "db_write",
-    //   "Write a message to the database",
-    //   {
-    //     message: z.string(),
-    //   },
-    //   async ({ message }) => {
-    //     await db.insert(messages).values({ text: message });
-    //     return {
-    //       content: [
-    //         { type: "text", text: `Message "${message}" written to DB.` },
-    //       ],
-    //     };
-    //   }
-    // );
-
-    // server.tool(
     //   "db_read_all",
     //   "Read all messages from the database",
     //   {},
