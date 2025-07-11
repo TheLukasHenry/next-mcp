@@ -165,6 +165,40 @@ const handler = createMcpHandler(
         };
       }
     );
+
+    server.tool(
+      "delete_hobby",
+      "Delete a hobby by name from the database",
+      {
+        name: z.string(),
+      },
+      async ({ name }) => {
+        const sql = neon(process.env.DATABASE_URL!);
+        const result = await sql`
+          DELETE FROM hobbies WHERE name = ${name} RETURNING id
+        `;
+
+        if (result.length > 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Hobby "${name}" has been deleted successfully.`,
+              },
+            ],
+          };
+        } else {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Hobby "${name}" not found.`,
+              },
+            ],
+          };
+        }
+      }
+    );
   },
   {
     capabilities: {
@@ -189,6 +223,9 @@ const handler = createMcpHandler(
         },
         create_hobby: {
           description: "Create a new hobby in the database",
+        },
+        delete_hobby: {
+          description: "Delete a hobby by name",
         },
       },
     },
