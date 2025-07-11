@@ -68,12 +68,20 @@ const handler = createMcpHandler(
         value: z.string(),
       },
       async ({ key, value }) => {
-        await redis.set(key, value);
-        return {
-          content: [
-            { type: "text", text: `Set ${key} to "${value}" in Redis.` },
-          ],
-        };
+        try {
+          await redis.set(key, value);
+          return {
+            content: [
+              { type: "text", text: `Set ${key} to "${value}" in Redis.` },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              { type: "text", text: `Error setting Redis key: ${error}` },
+            ],
+          };
+        }
       }
     );
 
@@ -84,10 +92,18 @@ const handler = createMcpHandler(
         key: z.string(),
       },
       async ({ key }) => {
-        const value = await redis.get(key);
-        return {
-          content: [{ type: "text", text: `Value for ${key}: ${value}` }],
-        };
+        try {
+          const value = await redis.get(key);
+          return {
+            content: [{ type: "text", text: `Value for ${key}: ${value}` }],
+          };
+        } catch (error) {
+          return {
+            content: [
+              { type: "text", text: `Error getting Redis key: ${error}` },
+            ],
+          };
+        }
       }
     );
 
@@ -122,6 +138,33 @@ const handler = createMcpHandler(
         };
       }
     );
+
+    server.tool(
+      "create_hobby",
+      "Create a new hobby in the database",
+      {
+        name: z.string(),
+        description: z.string(),
+        category: z.string(),
+        difficulty_level: z.string(),
+        is_active: z.boolean().optional().default(true),
+      },
+      async ({ name, description, category, difficulty_level, is_active }) => {
+        const sql = neon(process.env.DATABASE_URL!);
+        await sql`
+          INSERT INTO hobbies (name, description, category, difficulty_level, is_active)
+          VALUES (${name}, ${description}, ${category}, ${difficulty_level}, ${is_active})
+        `;
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Hobby "${name}" has been created successfully.`,
+            },
+          ],
+        };
+      }
+    );
   },
   {
     capabilities: {
@@ -143,6 +186,9 @@ const handler = createMcpHandler(
         },
         show_hobbies: {
           description: "List all hobbies from the database",
+        },
+        create_hobby: {
+          description: "Create a new hobby in the database",
         },
       },
     },
