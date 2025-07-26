@@ -41,6 +41,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Deployment
 - **Vercel**: [Vercel Docs](https://vercel.com/docs) - Serverless deployment platform
 
+### Integrations
+- **Todoist**: [Todoist API Docs](https://developer.todoist.com/rest/v2/) - Task management integration
+
 ## Workflow Instructions
 
 ### Before Starting Work
@@ -70,6 +73,7 @@ The project includes custom slash commands in `.claude/commands/`:
 - `/deploy-check` - Validate deployment readiness  
 - `/db-status` - Check database connectivity and health
 - `/hobby-demo` - Demonstrate hobby management functionality
+- `/todoist-today` - Get today's tasks from Todoist integration
 
 ## Task Templates
 
@@ -114,3 +118,11 @@ This is a Next.js MCP (Model Context Protocol) server using the Vercel MCP Adapt
 - Error handling with try/catch blocks returning formatted MCP responses
 
 The project implements a hobby management system as the primary use case, with tools for creating, listing, and deleting hobbies stored in PostgreSQL.
+
+### Todoist Integration
+
+The server includes a Todoist integration that provides:
+- **get_todays_tasks**: Retrieves today's tasks from your Todoist account
+- Requires `TODOIST_API_TOKEN` environment variable
+- Returns formatted task list with priorities, projects, and due times
+- Handles authentication errors and empty task lists gracefully

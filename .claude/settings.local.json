@@ -4,7 +4,18 @@
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:docs.anthropic.com)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:developer.todoist.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)",
+      "Bash(node:*)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(rm:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

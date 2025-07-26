@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { db } from "../../lib/db";
 import { redis } from "../../lib/redis";
 import { neon } from "@neondatabase/serverless";
+import { todoist } from "../../lib/todoist";
 // import { messages } from "../../lib/db/schema";
 
 // API Key validation function
@@ -199,6 +200,37 @@ const handler = createMcpHandler(
         }
       }
     );
+
+    server.tool(
+      "get_todays_tasks",
+      "Get today's tasks from Todoist",
+      {},
+      async () => {
+        try {
+          const tasks = await todoist.getTodaysTasks();
+          const projects = await todoist.getProjects();
+          const formattedTasks = todoist.formatTasksForDisplay(tasks, projects);
+          
+          return {
+            content: [
+              {
+                type: "text",
+                text: formattedTasks,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error fetching today's tasks: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              },
+            ],
+          };
+        }
+      }
+    );
   },
   {
     capabilities: {
@@ -226,6 +258,9 @@ const handler = createMcpHandler(
         },
         delete_hobby: {
           description: "Delete a hobby by name",
+        },
+        get_todays_tasks: {
+          description: "Get today's tasks from Todoist",
         },
       },
     },
