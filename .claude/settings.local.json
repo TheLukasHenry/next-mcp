@@ -15,7 +15,8 @@
       "Bash(true)",
       "Bash(rm:*)",
       "Bash(npm run dev:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:api.slack.com)"
     ],
     "deny": []
   }
