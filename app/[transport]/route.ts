@@ -4,6 +4,8 @@ import { NextRequest } from "next/server";
 import { db } from "../../lib/db";
 import { redis } from "../../lib/redis";
 import { neon } from "@neondatabase/serverless";
+import { todoist } from "../../lib/todoist";
+import { slack } from "../../lib/slack";
 // import { messages } from "../../lib/db/schema";
 
 // API Key validation function
@@ -199,6 +201,97 @@ const handler = createMcpHandler(
         }
       }
     );
+
+    server.tool(
+      "get_todays_tasks",
+      "Get today's tasks from Todoist",
+      {},
+      async () => {
+        try {
+          const tasks = await todoist.getTodaysTasks();
+          const projects = await todoist.getProjects();
+          const formattedTasks = todoist.formatTasksForDisplay(tasks, projects);
+          
+          return {
+            content: [
+              {
+                type: "text",
+                text: formattedTasks,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error fetching today's tasks: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              },
+            ],
+          };
+        }
+      }
+    );
+
+    server.tool(
+      "get_my_slack_messages",
+      "Get recent messages from all accessible Slack conversations",
+      {
+        limit: z.number().optional().default(50),
+      },
+      async ({ limit }) => {
+        try {
+          const messages = await slack.getAllMyMessages(limit);
+          
+          return {
+            content: [
+              {
+                type: "text",
+                text: messages,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error fetching Slack messages: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              },
+            ],
+          };
+        }
+      }
+    );
+
+    server.tool(
+      "test_slack_connection",
+      "Test Slack API connection and authentication",
+      {},
+      async () => {
+        try {
+          const result = await slack.testConnection();
+          
+          return {
+            content: [
+              {
+                type: "text",
+                text: result,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `❌ ${error instanceof Error ? error.message : 'Unknown error'}`,
+              },
+            ],
+          };
+        }
+      }
+    );
   },
   {
     capabilities: {
@@ -226,6 +319,15 @@ const handler = createMcpHandler(
         },
         delete_hobby: {
           description: "Delete a hobby by name",
+        },
+        get_todays_tasks: {
+          description: "Get today's tasks from Todoist",
+        },
+        get_my_slack_messages: {
+          description: "Get recent messages from all accessible Slack conversations",
+        },
+        test_slack_connection: {
+          description: "Test Slack API connection and authentication",
         },
       },
     },

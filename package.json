@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
@@ -26,7 +26,7 @@
     "@types/node": "^20",
     "@types/pg": "^8.15.4",
     "@types/react": "^19",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "drizzle-kit": "^0.31.2",
     "typescript": "^5"
   }
